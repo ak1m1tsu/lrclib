@@ -18,7 +18,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 **lrclib** — cross-platform Go CLI for searching and downloading song lyrics from [lrclib.net](https://lrclib.net) and saving them as `.lrc` files. Includes a TUI for interactive search.
 
-**Stack:** Go 1.22+, Cobra (CLI), Bubble Tea (TUI), `log/slog`, `modernc.org/sqlite` (cache, CGO-free), GoReleaser, GitHub Actions.
+**Stack:** Go 1.26.3+, Cobra (CLI), Bubble Tea (TUI), `log/slog`, `modernc.org/sqlite` (cache, CGO-free), GoReleaser, GitHub Actions.
 
 ---
 
