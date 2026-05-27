@@ -47,6 +47,7 @@ func (i trackItem) Title() string {
 	}
 	return "(untitled)"
 }
+
 func (i trackItem) Description() string {
 	desc := i.t.Artist
 	if i.t.Album != "" {

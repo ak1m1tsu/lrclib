@@ -17,7 +17,7 @@ func newSearchCmd(svc *usecase.Service) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "search",
 		Short: "Interactively search and download lyrics (TUI)",
-		RunE: func(cmd *cobra.Command, _ []string) error {
+		RunE: func(_ *cobra.Command, _ []string) error {
 			if outDir == "" {
 				var err error
 				outDir, err = os.Getwd()
