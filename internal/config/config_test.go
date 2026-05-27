@@ -91,7 +91,7 @@ func TestLoad_TOMLFile(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	t.Setenv("AppData", dir)        // Windows
+	t.Setenv("AppData", dir)         // Windows
 	t.Setenv("XDG_CONFIG_HOME", dir) // Linux/macOS
 
 	cfg, err := config.Load()
