@@ -1,0 +1,8 @@
+pre-commit:
+  commands:
+    fmt:
+      run: gofumpt -l .
+    vet:
+      run: CGO_ENABLED=0 go vet ./...
+    lint:
+      run: golangci-lint run --fast
