@@ -1,0 +1,14 @@
+# lrclib configuration file
+# Copy to os.UserConfigDir()/lrclib/config.toml and uncomment to override defaults.
+#
+# Priority: CLI flags > LRCLIB_* env vars > this file > built-in defaults
+
+# [cache]
+# ttl = 604800          # Cache TTL in seconds (default: 7 days)
+
+# [log]
+# level  = "info"       # Log level: debug | info | warn | error
+# format = "text"       # Log format: text | json
+
+# [http]
+# timeout = 15          # HTTP read timeout in seconds (default: 15)
