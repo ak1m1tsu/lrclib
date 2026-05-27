@@ -31,6 +31,12 @@ type Fetcher interface {
 	Get(ctx context.Context, q Query) (*lrc.Track, error)
 }
 
+// Searcher searches for tracks by free-text query.
+// Implemented by an adapter wrapping internal/api.Client.
+type Searcher interface {
+	Search(ctx context.Context, query string) ([]*lrc.Track, error)
+}
+
 // LyricsCache stores and retrieves previously fetched tracks.
 // Implemented by an adapter wrapping internal/cache.Cache.
 type LyricsCache interface {
@@ -40,17 +46,30 @@ type LyricsCache interface {
 
 // Service implements the lyrics lookup and file-save business logic.
 type Service struct {
-	fetcher Fetcher
-	cache   LyricsCache
-	log     *slog.Logger
+	fetcher  Fetcher
+	searcher Searcher
+	cache    LyricsCache
+	log      *slog.Logger
 }
 
-// New creates a Service. cache may be nil (cache will be skipped).
-func New(fetcher Fetcher, cache LyricsCache, log *slog.Logger) *Service {
+// New creates a Service. cache and searcher may be nil.
+func New(fetcher Fetcher, cache LyricsCache, log *slog.Logger, opts ...ServiceOption) *Service {
 	if log == nil {
 		log = slog.Default()
 	}
-	return &Service{fetcher: fetcher, cache: cache, log: log}
+	s := &Service{fetcher: fetcher, cache: cache, log: log}
+	for _, o := range opts {
+		o(s)
+	}
+	return s
+}
+
+// ServiceOption configures a Service.
+type ServiceOption func(*Service)
+
+// WithSearcher sets the Searcher used by SearchTracks.
+func WithSearcher(sr Searcher) ServiceOption {
+	return func(s *Service) { s.searcher = sr }
 }
 
 // GetLyrics returns lyrics for the given query.
@@ -75,6 +94,15 @@ func (s *Service) GetLyrics(ctx context.Context, q Query) (*lrc.Track, error) {
 	}
 
 	return track, nil
+}
+
+// SearchTracks performs a free-text search and returns all matching tracks.
+// Returns an error if no Searcher was configured.
+func (s *Service) SearchTracks(ctx context.Context, query string) ([]*lrc.Track, error) {
+	if s.searcher == nil {
+		return nil, errs.Internal("search not configured", nil)
+	}
+	return s.searcher.Search(ctx, query)
 }
 
 // SaveLRC writes track as an .lrc file to path.

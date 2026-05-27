@@ -119,6 +119,19 @@ func (c *Client) Search(ctx context.Context, query string) (*Lyrics, error) {
 	return c.search(ctx, query)
 }
 
+// SearchAll returns all results for a free-text query.
+func (c *Client) SearchAll(ctx context.Context, query string) ([]Lyrics, error) {
+	params := url.Values{}
+	params.Set("q", query)
+
+	var results []Lyrics
+	if err := c.do(ctx, "/api/search", params, &results); err != nil {
+		return nil, err
+	}
+
+	return results, nil
+}
+
 // ── internal helpers ──────────────────────────────────────────────────────────
 
 func (c *Client) getByMeta(ctx context.Context, meta TrackMeta) (*Lyrics, error) {
