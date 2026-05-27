@@ -53,6 +53,25 @@ func lyricsToTrack(l *api.Lyrics) (*lrc.Track, error) {
 	return nil, errs.NotFound(fmt.Sprintf("no usable lyrics for %q by %q", l.TrackName, l.ArtistName))
 }
 
+// apiSearcher adapts api.Client.SearchAll to usecase.Searcher.
+type apiSearcher struct{ client *api.Client }
+
+func (a *apiSearcher) Search(ctx context.Context, query string) ([]*lrc.Track, error) {
+	results, err := a.client.SearchAll(ctx, query)
+	if err != nil {
+		return nil, err
+	}
+	tracks := make([]*lrc.Track, 0, len(results))
+	for i := range results {
+		t, err := lyricsToTrack(&results[i])
+		if err != nil {
+			continue
+		}
+		tracks = append(tracks, t)
+	}
+	return tracks, nil
+}
+
 // cacheAdapter adapts cache.Cache to usecase.LyricsCache.
 type cacheAdapter struct{ c *cache.Cache }
 

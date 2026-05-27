@@ -59,7 +59,12 @@ func run(ctx context.Context) error {
 		lyricsCache = &cacheAdapter{c: c}
 	}
 
-	svc := usecase.New(&apiFetcher{client: apiClient}, lyricsCache, log)
+	svc := usecase.New(
+		&apiFetcher{client: apiClient},
+		lyricsCache,
+		log,
+		usecase.WithSearcher(&apiSearcher{client: apiClient}),
+	)
 
 	return newRootCmd(svc).ExecuteContext(ctx)
 }
@@ -75,6 +80,7 @@ song lyrics from lrclib.net and saving them as .lrc files.`,
 	}
 
 	cmd.AddCommand(newGetCmd(svc))
+	cmd.AddCommand(newSearchCmd(svc))
 
 	return cmd
 }
