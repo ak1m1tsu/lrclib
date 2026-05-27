@@ -4,8 +4,6 @@ linters:
   enable:
     - errcheck
     - godot
-    - gofumpt
-    - gosimple
     - govet
     - ineffassign
     - misspell
